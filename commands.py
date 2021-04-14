@@ -79,5 +79,5 @@ class DeleteBookmarkCommand:
 
 
 class QuitCommand:
-    def execute(self):
+    def execute(self) -> None:
         sys.exit()
