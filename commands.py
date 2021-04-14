@@ -15,14 +15,14 @@ TABLE_NAME = "bookmarks"
 # TYPE DEFINITIONS
 
 
-@dataclass
+@dataclass(frozen=True)
 class AddBookmarkData:
     title: str
     url: str
     notes: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class DeleteBookmarkData:
     id: int
 
