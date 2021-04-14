@@ -1,7 +1,8 @@
+import abc
 import datetime
 import sys
 from dataclasses import asdict, dataclass
-from typing import List
+from typing import Any, List
 
 from db import DBInteractor
 
@@ -28,6 +29,12 @@ class DeleteBookmarkData:
 
 
 # COMMANDS
+
+
+class Command(abc.ABC):
+    @abc.abstractmethod
+    def execute(self, *args, **kwargs) -> Any:
+        pass
 
 
 class CreateTableCommand:
