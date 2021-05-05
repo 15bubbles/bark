@@ -19,7 +19,9 @@ class DBInteractor:
             cursor.execute(statement, parameters)
             return cursor
 
-    def create_db(self, table_name: str, column_definitions: Dict[str, str]) -> None:
+    def create_db(
+        self, table_name: str, column_definitions: Dict[str, str]
+    ) -> None:
         columns = ", ".join(
             [
                 f"{column_name} {column_definition}"
