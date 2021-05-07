@@ -1,14 +1,34 @@
+[tool.poetry]
+name = "bark"
+version = "0.1.0"
+description = "Bookmarks manager"
+authors = ["15bubbles <15bubbles.15bubbles@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+black = "^21.5b0"
+flake8 = "^3.9.1"
+mypy = "^0.812"
+pytest = "^6.2.4"
+
 [tool.black]
 line-length = 79
-target-version = ['py38']
+target-version = ["py38"]
 include = '\.pyi?$'
 exclude = '''
 (
   /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
+      \.eggs
+    | \.git
     | \.mypy_cache
     | \.venv
   )/
 )
 '''
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

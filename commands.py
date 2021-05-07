@@ -92,7 +92,7 @@ class ListBookmarksCommand(Command):
         self.order_by = order_by
 
     def execute(self, data=None) -> CommandResult:
-        bookmarks = DB.get(TABLE_NAME).fetchall()
+        bookmarks = DB.get(TABLE_NAME, order_by=self.order_by).fetchall()
 
         return CommandResult(True, bookmarks)
 
