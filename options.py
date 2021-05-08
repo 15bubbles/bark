@@ -1,6 +1,6 @@
 from typing import Any, Callable, Optional
 
-from commands import Command
+from commands import Command, CommandResult
 
 
 class Option:
@@ -20,16 +20,16 @@ class Option:
     def __str__(self) -> str:
         return self.name
 
-    def choose(self) -> None:
+    def choose(self) -> CommandResult:
         data = (
             self.preparation_callback()
             if self.preparation_callback is not None
             else None
         )
-        message = (
+        result = (
             self.command.execute(data)
             if data is not None
             else self.command.execute()
         )
 
-        print(message)
+        return result

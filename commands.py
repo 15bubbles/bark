@@ -2,10 +2,9 @@ import abc
 import datetime
 import sys
 from dataclasses import asdict, dataclass
-from typing import Any, Callable, List, Optional, TypedDict
+from typing import Any, Callable, Optional
 
 from db import DBInteractor
-
 
 # CONSTANTS
 
@@ -14,15 +13,6 @@ TABLE_NAME = "bookmarks"
 
 
 # TYPE DEFINITIONS
-
-
-# TODO: perhaps could fiddle with some generic as result(?)
-@dataclass(frozen=True)
-class Bookmark:
-    id: int
-    title: str
-    url: str
-    notes: str = ""
 
 
 @dataclass(frozen=True)
@@ -37,6 +27,14 @@ class CommandResult:
 
 
 @dataclass(frozen=True)
+class Bookmark:
+    id: str
+    title: str
+    url: str
+    notes: str = ""
+
+
+@dataclass(frozen=True)
 class AddBookmarkData:
     title: str
     url: str
@@ -45,13 +43,12 @@ class AddBookmarkData:
 
 @dataclass(frozen=True)
 class DeleteBookmarkData:
-    id: int
+    id: str
 
 
 # COMMANDS
 
 
-# TODO: perhaps some generics, or just rely on dictionary when pushing data to a command?
 class Command(abc.ABC):
     @abc.abstractmethod
     def execute(self, data: Any) -> CommandResult:
@@ -63,7 +60,7 @@ class CreateTableCommand(Command):
         DB.create_db(
             TABLE_NAME,
             {
-                "id": "integer autoincrement primary key",
+                "id": "integer primary key autoincrement",
                 "title": "text not null",
                 "url": "text not null",
                 "notes": "text",
@@ -76,7 +73,7 @@ class CreateTableCommand(Command):
 
 class AddBookmarkCommand(Command):
     def execute(self, data: AddBookmarkData) -> CommandResult:
-        DB.create_db(
+        DB.add(
             TABLE_NAME,
             {
                 **asdict(data),
@@ -104,8 +101,10 @@ class DeleteBookmarkCommand(Command):
         return CommandResult(True, None)
 
 
-# TODO: not sure if approach with passing callback to `QuitCommand` is proper approach?
-# perhaps quitting the program should be a responsibility of presentation layer?
+# TODO: not sure if approach with passing callback to `QuitCommand` is
+# proper approach?
+# perhaps quitting the program should be a responsibility of
+# presentation layer?
 class QuitCommand(Command):
     def execute(self, data=None) -> CommandResult:
         return CommandResult(True, None, sys.exit)
