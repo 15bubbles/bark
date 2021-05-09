@@ -78,7 +78,7 @@ class SQLiteBookmarksRepository(BookmarksRepository):
         cursor = self.db_interactor.get(self.table_name, order_by=order_by)
         bookmarks = cursor.fetchall()
 
-        return [Bookmark(**bookmark) for bookmark in bookmarks]
+        return [Bookmark(*bookmark) for bookmark in bookmarks]
 
     def get(self, data: GetBookmarkData) -> Union[Bookmark, None]:
         cursor = self.db_interactor.get(
@@ -89,7 +89,7 @@ class SQLiteBookmarksRepository(BookmarksRepository):
         if bookmark is None:
             return None
 
-        return Bookmark(**bookmark)
+        return Bookmark(*bookmark)
 
     def delete(self, data: DeleteBookmarkData) -> None:
         self.db_interactor.delete(self.table_name, {"id": data.id})
