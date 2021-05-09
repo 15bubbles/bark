@@ -2,7 +2,7 @@ import sqlite3
 from typing import Any, Dict, Iterable, Optional
 
 
-class DBInteractor:
+class SQLiteInteractor:
     def __init__(self, db_filename: str):
         self.connection = sqlite3.connect(db_filename)
 

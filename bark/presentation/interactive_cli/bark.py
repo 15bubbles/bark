@@ -2,16 +2,15 @@ import os
 import platform
 from typing import Dict, Union
 
-from commands import (
+from bark.commands import (
     AddBookmarkCommand,
     AddBookmarkData,
-    CreateTableCommand,
     DeleteBookmarkCommand,
     DeleteBookmarkData,
     ListBookmarksCommand,
     QuitCommand,
 )
-from options import Option
+from bark.presentation.interactive_cli.options import Option
 
 OptionsMapping = Dict[str, Option]
 
@@ -71,13 +70,7 @@ def loop(options: OptionsMapping):
             continue
 
         selected_option = options[user_choice.upper()]
-        result = selected_option.choose()
-
-        if not result.success:
-            print("Operation failed")
-
-        if result.success and result.result:
-            print(result.result)
+        selected_option.choose()
 
 
 if __name__ == "__main__":
@@ -110,6 +103,5 @@ if __name__ == "__main__":
         ),
     }
 
-    CreateTableCommand().execute()
     print("Hello to Bark!")
     loop(options)

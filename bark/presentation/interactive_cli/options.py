@@ -1,6 +1,6 @@
 from typing import Any, Callable, Optional
 
-from commands import Command, CommandResult
+from bark.commands import Command
 
 
 class Option:
@@ -20,7 +20,7 @@ class Option:
     def __str__(self) -> str:
         return self.name
 
-    def choose(self) -> CommandResult:
+    def choose(self) -> None:
         data = (
             self.preparation_callback()
             if self.preparation_callback is not None
@@ -32,4 +32,5 @@ class Option:
             else self.command.execute()
         )
 
-        return result
+        if result is not None:
+            print(result)
