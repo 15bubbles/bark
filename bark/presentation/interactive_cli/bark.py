@@ -63,10 +63,10 @@ def _is_option_valid(option_key: str, options: _OptionsMapping) -> bool:
 # NOTE: might be useful to create a class that will hold logic with
 # application loop
 def loop(options: _OptionsMapping):
+    _clear_screen()
     print("Welcome to Bark!")
 
     while True:
-        _clear_screen()
         _print_options(options)
         user_choice = input("Select an option: ")
 
@@ -77,12 +77,16 @@ def loop(options: _OptionsMapping):
         selected_option = options[user_choice.upper()]
         selected_option.choose()
 
+        _ = input("Press any key to return to menu")
+        _clear_screen()
+
 
 OPTIONS = {
     "A": Option(
         "Add new bookmark",
         AddBookmarkCommand(),
         _get_add_bookmark_data,
+        success_message="Bookmark added!",
     ),
     "B": Option(
         "List bookmarks by creation date",
@@ -100,6 +104,7 @@ OPTIONS = {
         "Delete bookmark",
         DeleteBookmarkCommand(),
         _get_delete_bookmark_data,
+        success_message="Bookmark deleted!",
     ),
     "Q": Option(
         "Quit",
