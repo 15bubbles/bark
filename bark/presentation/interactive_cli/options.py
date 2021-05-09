@@ -1,6 +1,7 @@
 from typing import Any, Callable, List, Optional, Union
 
 from bark.commands import Command
+from bark.persistence.dtos import Bookmark
 
 
 class Option:
@@ -24,11 +25,28 @@ class Option:
     def __str__(self) -> str:
         return self.name
 
-    def _prepare_success_message(self, result: Union[List[Any], Any]) -> str:
+    @staticmethod
+    def _format_bookmark(bookmark: Bookmark) -> str:
+        # NOTE: possibly a "jealousy", might be worth to move this
+        # somewhere
+        return (
+            f"ID: {bookmark.id}\n"
+            f"Title: {bookmark.title}\n"
+            f"URL: {bookmark.url}\n"
+            f"Notes: {bookmark.notes}\n"
+            f"Date added: {bookmark.date_added}\n"
+        )
+
+    def _prepare_success_message(
+        self, result: Union[List[Bookmark], Bookmark]
+    ) -> str:
         if isinstance(result, list):
-            result = "\n".join([str(item) for item in result])
+            result = "\n".join(
+                [self._format_bookmark(item) for item in result]
+            )
             return self.success_message.format(result=result)
 
+        result = self._format_bookmark(result)
         return self.success_message.format(result=result)
 
     def choose(self) -> None:
