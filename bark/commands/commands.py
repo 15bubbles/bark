@@ -33,7 +33,7 @@ class DeleteBookmarkCommand(Command):
         REPOSITORY.delete(data)
 
 
-# TODO: perhaps this should be presentation's layer responsibility?
+# NOTE: perhaps this should be presentation's layer responsibility?
 class QuitCommand(Command):
     def execute(self, data=None) -> None:
         sys.exit(0)

@@ -12,12 +12,13 @@ from bark.commands import (
 )
 from bark.presentation.interactive_cli.options import Option
 
-OptionsMapping = Dict[str, Option]
+
+_OptionsMapping = Dict[str, Option]
 
 
 # NOTE: some url validation would be nice here
 # and some type validation as well
-def get_user_input(label: str, required: bool = False) -> Union[str, None]:
+def _get_user_input(label: str, required: bool = False) -> Union[str, None]:
     value = input(f"{label}: ") or None
 
     while required and not value:
@@ -26,46 +27,48 @@ def get_user_input(label: str, required: bool = False) -> Union[str, None]:
     return value
 
 
-def get_add_bookmark_data():
+def _get_add_bookmark_data():
     return AddBookmarkData(
-        title=get_user_input("Title", required=True),
-        url=get_user_input("URL", required=True),
-        notes=get_user_input("Notes", required=False),
+        title=_get_user_input("Title", required=True),
+        url=_get_user_input("URL", required=True),
+        notes=_get_user_input("Notes", required=False),
     )
 
 
-def get_delete_bookmark_data():
+def _get_delete_bookmark_data():
     return DeleteBookmarkData(
-        id=get_user_input("ID", required=True),
+        id=_get_user_input("ID", required=True),
     )
 
 
-def clear_screen() -> None:
+def _clear_screen() -> None:
     if platform.system() == "Windows":
         os.system("cls")
     else:
         os.system("clear")
 
 
-def print_options(options: OptionsMapping) -> None:
+def _print_options(options: _OptionsMapping) -> None:
     for key, option in options.items():
         print(f"({key}): {option.name}")
 
 
-def is_option_valid(option_key: str, options: OptionsMapping) -> bool:
+def _is_option_valid(option_key: str, options: _OptionsMapping) -> bool:
     if option_key in options:
         return True
 
     return False
 
 
-def loop(options: OptionsMapping):
+# NOTE: might be useful to create a class that will hold logic with
+# application loop
+def _loop(options: _OptionsMapping):
     while True:
-        clear_screen()
-        print_options(options)
+        _clear_screen()
+        _print_options(options)
         user_choice = input("Select an option: ")
 
-        if not is_option_valid(user_choice.upper(), options):
+        if not _is_option_valid(user_choice.upper(), options):
             print(f"Not a valid choice")
             continue
 
@@ -73,35 +76,36 @@ def loop(options: OptionsMapping):
         selected_option.choose()
 
 
-if __name__ == "__main__":
-    options = {
-        "A": Option(
-            "Add new bookmark",
-            AddBookmarkCommand(),
-            get_add_bookmark_data,
-        ),
-        "B": Option(
-            "List bookmarks by creation date",
-            # TODO: perhaps this is a bit of an abstraction leak, that
-            # we need to know fields on this level
-            ListBookmarksCommand(order_by="date_added"),
-        ),
-        "T": Option(
-            "List bookmarks by title",
-            # TODO: perhaps this is a bit of an abstraction leak, that
-            # we need to know fields on this level
-            ListBookmarksCommand(order_by="title"),
-        ),
-        "D": Option(
-            "Delete bookmark",
-            DeleteBookmarkCommand(),
-            get_delete_bookmark_data,
-        ),
-        "Q": Option(
-            "Quit",
-            QuitCommand(),
-        ),
-    }
+_OPTIONS = {
+    "A": Option(
+        "Add new bookmark",
+        AddBookmarkCommand(),
+        _get_add_bookmark_data,
+    ),
+    "B": Option(
+        "List bookmarks by creation date",
+        # NOTE: perhaps this is a bit of an abstraction leak, that
+        # we need to know fields on this level
+        ListBookmarksCommand(order_by="date_added"),
+    ),
+    "T": Option(
+        "List bookmarks by title",
+        # NOTE: perhaps this is a bit of an abstraction leak, that
+        # we need to know fields on this level
+        ListBookmarksCommand(order_by="title"),
+    ),
+    "D": Option(
+        "Delete bookmark",
+        DeleteBookmarkCommand(),
+        _get_delete_bookmark_data,
+    ),
+    "Q": Option(
+        "Quit",
+        QuitCommand(),
+    ),
+}
 
+
+if __name__ == "__main__":
     print("Hello to Bark!")
-    loop(options)
+    _loop(_OPTIONS)

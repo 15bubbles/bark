@@ -40,6 +40,9 @@ class BookmarksRepository(abc.ABC):
 # TODO: `db_filename` and `table_name` should be read from config and
 # such config should take values from environment variables
 # perhaps database location should be less error prone
+# NOTE: perhaps creation of database should not be done in init
+# NOTE: most probably database interactor instance should be injected
+# from above to simplify testing (?)
 class SQLiteBookmarksRepository(BookmarksRepository):
     def __init__(
         self,
@@ -48,7 +51,6 @@ class SQLiteBookmarksRepository(BookmarksRepository):
     ):
         self.db_interactor = SQLiteInteractor(db_filename)
         self.table_name = table_name
-        # TODO: perhaps creation of database should not be done in init
         self.db_interactor.create_db(
             self.table_name,
             {
@@ -73,19 +75,21 @@ class SQLiteBookmarksRepository(BookmarksRepository):
         raise NotImplemented("Updates are not implemented yet")
 
     def list(self, order_by: str) -> List[Bookmark]:
-        bookmarks = self.db_interactor.get(self.table_name, order_by=order_by)
+        cursor = self.db_interactor.get(self.table_name, order_by=order_by)
+        bookmarks = cursor.fetchall()
 
         return [Bookmark(**bookmark) for bookmark in bookmarks]
 
-    def get(self, data: GetBookmarkData) -> Bookmark:
-        bookmark = self.db_interactor.get(
+    def get(self, data: GetBookmarkData) -> Union[Bookmark, None]:
+        cursor = self.db_interactor.get(
             self.table_name, filters={"id": data.id}
         )
+        bookmark = cursor.fetchone()
 
-        if bookmark:
-            return Bookmark(**bookmark[0])
+        if bookmark is None:
+            return None
 
-        return None
+        return Bookmark(**bookmark)
 
     def delete(self, data: DeleteBookmarkData) -> None:
         self.db_interactor.delete(self.table_name, {"id": data.id})
