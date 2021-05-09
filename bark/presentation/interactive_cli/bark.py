@@ -62,7 +62,9 @@ def _is_option_valid(option_key: str, options: _OptionsMapping) -> bool:
 
 # NOTE: might be useful to create a class that will hold logic with
 # application loop
-def _loop(options: _OptionsMapping):
+def loop(options: _OptionsMapping):
+    print("Welcome to Bark!")
+
     while True:
         _clear_screen()
         _print_options(options)
@@ -76,7 +78,7 @@ def _loop(options: _OptionsMapping):
         selected_option.choose()
 
 
-_OPTIONS = {
+OPTIONS = {
     "A": Option(
         "Add new bookmark",
         AddBookmarkCommand(),
@@ -107,5 +109,4 @@ _OPTIONS = {
 
 
 if __name__ == "__main__":
-    print("Hello to Bark!")
-    _loop(_OPTIONS)
+    loop(OPTIONS)

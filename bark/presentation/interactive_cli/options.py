@@ -26,11 +26,10 @@ class Option:
 
     def _prepare_success_message(self, result: Union[List[Any], Any]) -> str:
         if isinstance(result, list):
-            return self.success_message.format(
-                "\n".join([str(item) for item in result])
-            )
+            result = "\n".join([str(item) for item in result])
+            return self.success_message.format(result=result)
 
-        return self.success_message.format(result)
+        return self.success_message.format(result=result)
 
     def choose(self) -> None:
         data = (

@@ -14,6 +14,9 @@ flake8 = "^3.9.1"
 mypy = "^0.812"
 pytest = "^6.2.4"
 
+[tool.poetry.scripts]
+bark = "bark.presentation.interactive_cli.__main__:main"
+
 [tool.black]
 line-length = 79
 target-version = ["py38"]
